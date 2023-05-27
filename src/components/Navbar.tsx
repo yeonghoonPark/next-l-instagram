@@ -10,6 +10,7 @@ import SearchIcon from "./ui/icons/SearchIcon";
 import ColorBtn from "./ui/ColorBtn";
 import { usePathname } from "next/navigation";
 import { useSession, signIn, signOut } from "next-auth/react";
+import Avatar from "./Avatar";
 
 const LINKS = [
   {
@@ -32,6 +33,7 @@ const LINKS = [
 export default function Navbar() {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const user = session?.user;
 
   return (
     <div className='flex justify-between items-center p-4'>
@@ -45,6 +47,13 @@ export default function Navbar() {
               <Link href={href}>{href === pathname ? checkedIcon : icon}</Link>
             </li>
           ))}
+          {user && (
+            <li>
+              <Link href={`/user/${user.username}`}>
+                <Avatar image={user.image} />
+              </Link>
+            </li>
+          )}
           <li>
             {session ? (
               <ColorBtn text='Sign out' onClick={() => signOut()} />
