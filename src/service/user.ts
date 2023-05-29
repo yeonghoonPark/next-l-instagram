@@ -21,3 +21,14 @@ export async function addUser({ id, username, name, email, image }: OAuthUser) {
     bookmarks: [],
   });
 }
+
+export async function getUserByEmail(email: string) {
+  return client.fetch(`
+  *[_type == "user" && email == "${email}"]
+  [0]
+  {
+    following[]->{username, image}
+  }
+  
+  `);
+}
