@@ -23,7 +23,7 @@ export default function FollowingBar() {
   // let test: string[] = [];
 
   return (
-    <section className='w-full flex justify-center items-center bg-slate-50 p-4 rounded-md shadow-md min-h-[128px]'>
+    <section className='w-full flex justify-center items-center bg-slate-50 p-4 rounded-md shadow-md min-h-[128px] mb-4'>
       {isLoading ? (
         <PacmanLoader color='#70a5f4' />
       ) : !users || users?.length === 0 ? (
