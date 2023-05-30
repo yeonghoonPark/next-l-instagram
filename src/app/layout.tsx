@@ -28,6 +28,7 @@ export default function RootLayout({
             <main>{children}</main>
           </SWRConfigContext>
         </AuthContext>
+        <div id='portal' />
       </body>
     </html>
   );
