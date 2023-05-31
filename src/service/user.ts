@@ -36,3 +36,20 @@ export async function getUserByEmail(email: string) {
     `,
   );
 }
+
+export async function getSearchUsers(keyword?: string) {
+  const query = keyword
+    ? `&& (name match "${keyword}") || (username match "${keyword}")`
+    : "";
+
+  return client.fetch(
+    `
+      *[_type == "user" ${query}]{
+        ...,
+        "id":_id,
+        "following":count(following),
+        "followers":count(followers),
+      }
+    `,
+  );
+}
