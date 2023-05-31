@@ -1,6 +1,6 @@
 type Props = {
   image?: string | null;
-  size?: "small" | "normal";
+  size?: "small" | "normal" | "large" | "xlarge";
   highlight?: boolean;
 };
 
@@ -26,10 +26,28 @@ const getContainerStyle = (size: string, highlight: boolean): string => {
   const highlightStyle = highlight
     ? "bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
     : "";
-  const sizeStyle = size === "small" ? "w-9 h-9" : "w-[68px] h-[68px]";
+  const sizeStyle = getContainerSize(size);
   return `${baseStyle} ${highlightStyle} ${sizeStyle}`;
 };
 
-const getImageSizeStyle = (size: string): string => {
-  return size === "small" ? "w-[34px] h-[34px] p-[1px]" : "w-16 h-16 p-[1px]";
+const getContainerSize = (size: string): string | undefined => {
+  switch (size) {
+    case "small":
+      return "w-9 h-9";
+    case "normal":
+      return "w-[62px] h-[62px]";
+    case "large":
+      return "w-[124px] h-[124px]";
+  }
+};
+
+const getImageSizeStyle = (size: string): string | undefined => {
+  switch (size) {
+    case "small":
+      return "w-[34px] h-[34px] p-[1px]";
+    case "normal":
+      return "w-[60px] h-[60px] p-[2px]";
+    case "large":
+      return "w-[120px] h-[120px] p-[2px]";
+  }
 };

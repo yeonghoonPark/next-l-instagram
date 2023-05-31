@@ -23,7 +23,7 @@ export default function UserSearch() {
   };
 
   return (
-    <section className='w-full max-w-screen-md flex flex-col items-center mx-auto'>
+    <section className='w-full flex flex-col items-center mx-auto'>
       <form className='w-[70%] my-6' onSubmit={onSubmit}>
         <input
           className='w-full border outline-none p-2 rounded-md'

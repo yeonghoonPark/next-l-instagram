@@ -25,7 +25,8 @@ export async function addUser({ id, username, name, email, image }: OAuthUser) {
 export async function getUserByEmail(email: string) {
   return client.fetch(
     `
-    *[_type == "user" && email == "${email}"][0]
+    *[_type == "user" && email == "${email}"]
+    [0]
     {
       ...,
       "id":_id,
@@ -52,4 +53,27 @@ export async function getSearchUsers(keyword?: string) {
       }
     `,
   );
+}
+
+export async function getUserForProfile(username: string) {
+  return client
+    .fetch(
+      `
+      *[_type == "user" && username == "${username}"]
+      [0]
+      {
+        ...,
+        "id": _id,
+        "following": count(following),
+        "followers": count(followers),
+        "posts": count(*[_type == "post" && author -> username == "${username}"])
+      }
+    `,
+    )
+    .then((cV) => ({
+      ...cV,
+      following: cV.following ?? 0,
+      followers: cV.followers ?? 0,
+      posts: cV.posts ?? 0,
+    }));
 }
