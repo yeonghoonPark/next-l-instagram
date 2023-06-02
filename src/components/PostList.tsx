@@ -9,7 +9,6 @@ import GridSpinner from "./ui/GridSpinner";
 export default function PostList() {
   const { data, isLoading, error } = useSWR<SimplePost[]>("/api/posts");
 
-  console.log(data, "@데이터");
   return (
     <section>
       {isLoading && (

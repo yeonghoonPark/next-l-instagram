@@ -13,7 +13,6 @@ export default function PostDetail({ post }: Props) {
   const { data } = useSWR<FullPost>(`/api/posts/${id}`);
   const comments = data?.comments;
 
-  console.log(comments, "@코멘트");
   return (
     <section className='flex w-full h-full'>
       <div className='relative basis-3/5'>

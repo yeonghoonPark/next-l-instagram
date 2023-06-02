@@ -10,7 +10,6 @@ type Props = {
 
 export default function FollowButton({ user }: Props) {
   const { data: loggedInUser } = useSWR<HomeUser>("/api/me");
-  console.log(loggedInUser, "@로그인드유저");
 
   const showButton = loggedInUser && loggedInUser.username !== user.username;
   const following =

@@ -16,8 +16,6 @@ export default function UserSearch() {
     error,
   } = useSWR<SearchUser[]>(`/api/search/${debouncedKeyword}`);
 
-  console.log(users, "@데이터");
-
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
   };
