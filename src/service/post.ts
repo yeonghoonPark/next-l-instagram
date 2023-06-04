@@ -22,9 +22,7 @@ export async function getFollowingPostsOf(email: string) {
           ${simplePostProjection}
         }`,
     )
-    .then((posts) =>
-      posts.map((post: SimplePost) => ({ ...post, image: urlFor(post.image) })),
-    );
+    .then(mapPosts);
 }
 
 export async function getPost(id: string) {
@@ -41,7 +39,7 @@ export async function getPost(id: string) {
       "createdAt":_creatdAt
     }`,
     )
-    .then((post) => ({ ...post, image: urlFor(post.image) }));
+    .then(mapPosts);
 }
 
 export async function getPostsOf(username: string) {
@@ -88,6 +86,27 @@ export async function getSavedPostsOf(username: string) {
 const mapPosts = (posts: SimplePost[]) => {
   return posts.map((post: SimplePost) => ({
     ...post,
+    likes: post.likes ?? [],
     image: urlFor(post.image),
   }));
 };
+
+export async function likePost(postId: string, userId: string) {
+  return client
+    .patch(postId) //
+    .setIfMissing({ likes: [] })
+    .append("likes", [
+      {
+        _ref: userId,
+        _type: "reference",
+      },
+    ])
+    .commit({ autoGenerateArrayKeys: true });
+}
+
+export async function dislikePost(postId: string, userId: string) {
+  return client
+    .patch(postId) //
+    .unset([`likes[_ref == "${userId}"]`])
+    .commit();
+}

@@ -2,7 +2,7 @@ import { addUser } from "@/service/user";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-const authOptions: NextAuthOptions = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID || "",
@@ -11,37 +11,45 @@ const authOptions: NextAuthOptions = NextAuth({
   ],
 
   callbacks: {
-    async signIn({ user: { id, name, email, image } }) {
-      // email이 존재 하지 않을 수 없는데..
-      // email이 존재 하지 않을 순 없지만 타입의 정보때문에 이런 if문을 작성했다고하는데 이럴거면 차라리 OAuthUser에서 타입을 null이 올 수 있다고 정해주는게 맞지 않나
+    async signIn({ user: { id, name, image, email } }) {
       if (!email) {
         return false;
       }
       addUser({
         id,
-        username: email.split("@")[0],
         name: name || "",
-        email,
         image,
+        email,
+        username: email.split("@")[0],
       });
       return true;
     },
 
-    async session({ session }) {
+    async session({ session, token }) {
       const user = session?.user;
+      // console.log(session, "@@콜백세션");
+
       if (user) {
         session.user = {
           ...user,
-          username: user.email?.split("@")[0] ?? "",
+          username: user.email?.split("@")[0] || "",
+          id: token.id as string,
         };
       }
+      // console.log(session, "@@콜백세션");
       return session;
+    },
+
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
     },
   },
 
   pages: {
     signIn: "/auth/signin",
   },
-});
-
-export { authOptions as GET, authOptions as POST };
+};
+export default NextAuth(authOptions);

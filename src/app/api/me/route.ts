@@ -1,10 +1,10 @@
-import { POST } from "../auth/[...nextauth]/route";
+import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getUserByEmail } from "@/service/user";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const session = await getServerSession(POST);
+  const session = await getServerSession(authOptions);
 
   const user = session?.user;
 
