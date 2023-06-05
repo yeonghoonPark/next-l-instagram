@@ -13,11 +13,11 @@ const simplePostProjection = `
     "createdAt":_createdAt
 `;
 
-export async function getFollowingPostsOf(email: string) {
+export async function getFollowingPostsOf(username: string) {
   return client
     .fetch(
-      `*[_type =="post" && author->email == "${email}"
-          || author._ref in *[_type == "user" && email == "${email}"].following[]._ref]
+      `*[_type =="post" && author->username == "${username}"
+          || author._ref in *[_type == "user" && username == "${username}"].following[]._ref]
           | order(_createdAt desc){
           ${simplePostProjection}
         }`,
@@ -39,69 +39,63 @@ export async function getPost(id: string) {
       "createdAt":_creatdAt
     }`,
     )
-    .then(mapPosts);
+    .then((post) => ({ ...post, image: urlFor(post.image) }));
 }
 
 export async function getPostsOf(username: string) {
   return client
     .fetch(
-      `
-      *[_type == "post" && author->username == "${username}"]
-      | order(_createdAt desc)
-      {
+      `*[_type == "post" && author->username == "${username}"]
+      | order(_createdAt desc){
         ${simplePostProjection}
-      }
-      `,
+      }`,
     )
     .then(mapPosts);
 }
-
 export async function getLikedPostsOf(username: string) {
   return client
     .fetch(
-      `
-      *[_type == "post" && "${username}" in likes[]->username]
-      | order(_createdAt desc)
-      {
+      `*[_type == "post" && "${username}" in likes[]->username]
+      | order(_createdAt desc){
         ${simplePostProjection}
-      }
-      `,
+      }`,
     )
     .then(mapPosts);
 }
-
 export async function getSavedPostsOf(username: string) {
   return client
     .fetch(
-      `
-      *[_type == "post" && _id in *[_type=="user" && username=="${username}"].bookmarks[]._ref]
-      | order(_createdAt desc)
-      {
+      `*[_type == "post" && _id in *[_type=="user" && username=="${username}"].bookmarks[]._ref]
+      | order(_createdAt desc){
         ${simplePostProjection}
       }`,
     )
     .then(mapPosts);
 }
 
-const mapPosts = (posts: SimplePost[]) => {
+function mapPosts(posts: SimplePost[]) {
   return posts.map((post: SimplePost) => ({
     ...post,
     likes: post.likes ?? [],
     image: urlFor(post.image),
   }));
-};
+}
 
 export async function likePost(postId: string, userId: string) {
-  return client
-    .patch(postId) //
-    .setIfMissing({ likes: [] })
-    .append("likes", [
-      {
-        _ref: userId,
-        _type: "reference",
-      },
-    ])
-    .commit({ autoGenerateArrayKeys: true });
+  return (
+    client
+      .patch(postId) //
+      // likes가 없다면 빈배열로 설정
+      .setIfMissing({ likes: [] })
+      .append("likes", [
+        {
+          _ref: userId,
+          _type: "reference",
+        },
+      ])
+      // key가 필요한데 key자동생성 옵션
+      .commit({ autoGenerateArrayKeys: true })
+  );
 }
 
 export async function dislikePost(postId: string, userId: string) {

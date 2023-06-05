@@ -21,10 +21,10 @@ export default function usePosts() {
       ...post,
       likes: like
         ? [...post.likes, username]
-        : post.likes.filter((like) => like !== username),
+        : post.likes.filter((l) => l !== username),
     };
 
-    const newPosts = posts?.map((post) => (post.id ? newPost : post));
+    const newPosts = posts?.map((p) => (p.id === post.id ? newPost : p));
 
     return mutate(updateLike(post.id, like), {
       optimisticData: newPosts,

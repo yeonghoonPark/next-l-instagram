@@ -12,7 +12,7 @@ export async function GET() {
     return new Response("Authentication Error", { status: 401 });
   }
 
-  const data = await getFollowingPostsOf(user.email);
+  const data = await getFollowingPostsOf(user.username);
 
   return NextResponse.json(data);
 }

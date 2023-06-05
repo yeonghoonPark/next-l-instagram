@@ -23,11 +23,6 @@ const tabs = [
 
 export default function UserPost({ user: { username } }: Props) {
   const [tab, setTab] = useState("posts");
-  const {
-    data: posts,
-    isLoading,
-    error,
-  } = useSWR<SimplePost[]>(`/api/users/${username}/${tab}`);
 
   return (
     <section className='max-w-[70%] mx-auto'>
@@ -45,18 +40,8 @@ export default function UserPost({ user: { username } }: Props) {
           </li>
         ))}
       </ul>
-      {isLoading && (
-        <div className='flex justify-center items-center mt-20'>
-          <PacmanLoader color='#70a5f4' />
-        </div>
-      )}
 
-      {posts && posts.length === 0 && (
-        <div className='flex justify-center items-center mt-20'>
-          <p>You don't have {tab}</p>
-        </div>
-      )}
-      {posts && posts.length > 0 && <PostGrid posts={posts} />}
+      <PostGrid username={username} tab={tab} />
     </section>
   );
 }
