@@ -1,7 +1,7 @@
 export type Comment = {
   comment: string;
   username: string;
-  image?: string | undefined | null;
+  image?: string | null;
 };
 
 export type FullPost = {

@@ -9,6 +9,13 @@ async function updateBookmark(postId: string, bookmark: boolean) {
   }).then((res) => res.json());
 }
 
+async function updateFollow(targetUserId: string, isFollow: boolean) {
+  return fetch("/api/follows", {
+    method: "PUT",
+    body: JSON.stringify({ targetUserId, isFollow }),
+  }).then((res) => res.json());
+}
+
 export default function useMe() {
   const { data: user, isLoading, error, mutate } = useSWR<HomeUser>("/api/me");
 
@@ -33,5 +40,14 @@ export default function useMe() {
     [user, mutate],
   );
 
-  return { user, isLoading, error, setBookmark };
+  const toggleFollow = useCallback(
+    (targetUserId: string, isFollow: boolean) => {
+      return mutate(updateFollow(targetUserId, isFollow), {
+        populateCache: false,
+      });
+    },
+    [mutate],
+  );
+
+  return { user, isLoading, error, setBookmark, toggleFollow };
 }

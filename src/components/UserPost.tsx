@@ -6,9 +6,6 @@ import { useState } from "react";
 import BookmarkIcon from "./ui/icons/BookmarkIcon";
 import HeartIcon from "./ui/icons/HeartIcon";
 import PostIcon from "./ui/icons/PostIcons";
-
-import useSWR from "swr";
-import { PacmanLoader } from "react-spinners";
 import PostGrid from "./PostGrid";
 
 type Props = {
